@@ -2,7 +2,8 @@ let vehicles = [];
 let noVehicles = 100;
 let targetLoc = [320,30];
 let count;
-let maxCount = 1000;
+let maxCount = 500;
+let PI = 3.14159;
 
 function setup() {
     createCanvas(640, 480);
@@ -28,7 +29,7 @@ function draw() {
         ellipse(width/2,30, 10,10);
 
         // update and draw current vehicles
-        for (var i = 0; i < noVehicles; i++){
+        for (var i = 0; i < vehicles.length; i++){
             vehicles[i].render();
             vehicles[i].update(count);
         }
@@ -38,13 +39,11 @@ function draw() {
     // Mutate & Reset
     else if (count == maxCount){
         // assign scores
-        for (var i = 0; i < noVehicles; i++){
-            vehicles[i].score();
+        for (var i = 0; i < vehicles.length; i++){
+            vehicles[i].getScore();
         }
         // genetic mutation
-
-        // restart
-        newVehicles(); //holder for now
+        mutate();
         count = 0;
     }
 
@@ -57,6 +56,8 @@ Vehicle = function(){
 
     this.velX = [];
     this.velY = [];
+
+    this.score = 0;
 
     this.render = function(){
         noStroke();
@@ -81,7 +82,7 @@ Vehicle = function(){
         }
     }
 
-    this.score = function(){
+    this.getScore = function(){
         //inverse of distance from target in x & y
         this.scoreX = 1/(this.x - targetLoc[0]);
         this.scoreY = 1/(this.y - targetLoc[1]);
@@ -96,4 +97,44 @@ function newVehicles(){
         vehicles[i] = new Vehicle();
         vehicles[i].randomVelocity();
     }
+}
+
+function mutate(){
+
+    //sort by descending score
+    vehicles.sort(function(a,b){
+        return parseFloat(a.score) - parseFloat(b.score)
+    })
+    vehicles.reverse();
+
+    //probablistically generate parents
+    let parents = [];
+    let l = 0; 
+    let m = 0;
+    while (parents.length < noVehicles/2){
+        odds = random(-0.1, cos(PI/200*l))
+
+        if (odds > 0){
+            parents[m] = vehicles[m];
+            m = m+1;
+        }
+
+        l = l + 1;
+        if (l > vehicles.length) l = 0;
+    }
+    
+    //each parent has a child with random mutation
+    let children = parents; 
+    for (var i = 0; i < children.length; i++){
+        for (var j = 0; j < children[i].velX.length; j++){
+            children[i].velX[j] = children[i].velX[j] + random (-0.1,0.1);
+            children[i].velY[j] = children[i].velY[j] + random (-0.1,0.1);
+        }
+    }
+
+    //new vehicle set = parents + children
+    let newVehicles = parents.concat(children);
+    vehicles = newVehicles;
+
+    console.log(vehicles)
 }
