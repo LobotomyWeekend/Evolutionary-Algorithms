@@ -2,7 +2,7 @@ function Population(){
     // Assign and populate arrays
     this.vehicles = [];
     this.parents = [];
-    this.noVehicles = 25;
+    this.noVehicles = 100;
     for (var i = 0; i < this.noVehicles; i++) {
         this.vehicles[i] = new Vehicle();
     }
@@ -32,7 +32,7 @@ function Population(){
         this.parents = [];
         // Generate matrix with strong vehicles more often
         for (var i = 0; i < this.noVehicles; i++){
-            var m = this.vehicles[i].score*100;
+            var m = this.vehicles[i].score * 100;
             for (var j = 0; j < m; j++){
                 this.parents.push(this.vehicles[i]);
             }
@@ -47,6 +47,7 @@ function Population(){
             var parentA = random(this.parents).dna;
             var parentB = random(this.parents).dna;
             var child = parentA.mating(parentB);
+            child.mutation();
             newVehicles[i] = new Vehicle(child);
         }
         this.vehicles = newVehicles;

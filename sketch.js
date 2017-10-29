@@ -2,7 +2,7 @@ let vehicles;
 let targetLoc;
 let count = 0;
 let maxCount = 400;
-let maxForce = 10;
+let maxForce = 5;
 
 function setup() {
     createCanvas(640, 480);
@@ -12,9 +12,9 @@ function setup() {
 
 
 function draw() {
-    background(30,180,240);   
+    background(255);   
     fill(0);
-    ellipse(targetLoc.x, targetLoc.y, 10, 10);
+    ellipse(targetLoc.x, targetLoc.y, 10,10);
     
     // Update + Draw Vehicles
     population.run();
@@ -25,5 +25,6 @@ function draw() {
         population.evaluate();
         population.evolve();
         count = 0;       
-    }   
+    }  
+    console.log(population)
 }

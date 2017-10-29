@@ -27,41 +27,47 @@ function Vehicle(dna){
       }
 
     this.update = function() {
-    // Checks distance from rocket to target
-    var d = dist(this.pos.x, this.pos.y, targetLoc.x, targetLoc.y);
-    // If distance less than 10 pixels, then it has reached target
-    if (d < 10) {
-        this.completed = true;
-        this.pos = targetLoc.copy();
-    }
-    // Rocket has hit left or right of window
-    if (this.pos.x > width || this.pos.x < 0) {
-        this.crashed = true;
-    }
-    // Rocket has hit top or bottom of window
-    if (this.pos.y > height || this.pos.y < 0) {
-        this.crashed = true;
-    }
+        // Checks distance from rocket to target
+        var d = dist(this.pos.x, this.pos.y, targetLoc.x, targetLoc.y);
+        // If distance less than 10 pixels, then it has reached target
+        if (d < 10) {
+            this.completed = true;
+            this.pos = targetLoc.copy();
+        }
+        // Rocket has hit left or right of window
+        if (this.pos.x > width || this.pos.x < 0) {
+            this.crashed = true;
+        }
+        // Rocket has hit top or bottom of window
+        if (this.pos.y > height || this.pos.y < 0) {
+            this.crashed = true;
+        }
 
+        //applies the random vectors defined in dna to consecutive frames of rocket
+        this.applyForce(this.dna.genes[count]);
 
-    //applies the random vectors defined in dna to consecutive frames of rocket
-    this.applyForce(this.dna.genes[count]);
-    // if rocket has not got to goal and not crashed then update physics engine
-    if (!this.completed && !this.crashed) {
-        this.vel.add(this.acc);
-        this.pos.add(this.vel);
-        this.acc.mult(0);
-        this.vel.limit(4);
-    }
+        // if rocket has not got to goal and not crashed then update physics engine
+        if (!this.completed && !this.crashed) {
+            this.vel.add(this.acc);
+            this.pos.add(this.vel);
+            this.acc.mult(0);
+            this.vel.limit(4);
+        }
     }
 
     this.getScore = function(){
-        // Map range
-        var d = dist(this.pos.x, this.pos.y, targetLoc.x, targetLoc.y);        
-        this.score = map (d, 0, width, width, 0);
-        // Special cases
-        if (this.completed) this.score *= 10;
-        if (this.crashed) this.score /= 10;
+        // Takes distance to target
+        var d = dist(this.pos.x, this.pos.y, targetLoc.x, targetLoc.y);
+        // Maps range of fitness
+        this.score = map(d, 0, width, width, 0);
+        // If rocket gets to target increase fitness of rocket
+        if (this.completed) {
+            this.score *= 10;
+        }
+        // If rocket does not get to target decrease fitness
+        if (this.crashed) {
+            this.score /= 10;
+        }
     }
     
 }
