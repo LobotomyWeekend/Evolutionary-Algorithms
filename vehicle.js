@@ -1,4 +1,4 @@
-Vehicle = function(){
+Vehicle = function(dna){
     // Initial Conditions
     this.pos = createVector(width/2, height - 30);
     this.vel = createVector();
@@ -10,18 +10,25 @@ Vehicle = function(){
     this.fitness = 0;
 
     // Give vehicle its DNA
-    if (dna) this.dna = dna;
-    else this.dna = new DNA();
+    if (dna){
+        this.dna = dna;
+    } else {
+        this.dna = new DNA();
+    }
 
     this.render = function(){
         noStroke();
         fill(255,50,10);
-        ellipse(this.x,this.y, 10, 10);
+        ellipse(this.pos.x,this.pos.y, 10, 10);
     }
+
+    this.applyForce = function(force) {
+        this.acc.add(force);
+      }
 
     this.update = function(count){
         // Calculate distance to region
-        var d = dist(this.x, this.y, targetLoc.x, targetLoc.y);
+        var d = dist(this.pos.x, this.pos.y, targetLoc.x, targetLoc.y);
         // Change of states
         if (d < 10){
             // reached target
@@ -32,7 +39,7 @@ Vehicle = function(){
             this.crashed = true;
         }
         // Physics
-        this.acc.add(this.dna.genes[count]);
+        this.applyForce(this.dna.genes[count]);
         if (!this.completed && !this.crashed){
             this.vel.add(this.acc);
             this.pos.add(this.vel);
@@ -43,7 +50,7 @@ Vehicle = function(){
 
     this.getScore = function(){
         // Map range
-        var d = dist(this.x, this.y, targetLoc.x, targetLoc.y);        
+        var d = dist(this.pos.x, this.pos.y, targetLoc.x, targetLoc.y);        
         this.score = map (d, 0, width, width, 0);
         // Special cases
         if (this.completed) this.score *= 10;

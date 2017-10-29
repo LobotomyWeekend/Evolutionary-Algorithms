@@ -1,15 +1,15 @@
-function Population(noVehicles){
+function Population(){
     // Assign and populate arrays
     this.vehicles = [];
     this.parents = [];
-    this.noVehicles = noVehicles;
+    this.noVehicles = 25;
     for (var i = 0; i < this.noVehicles; i++) {
         this.vehicles[i] = new Vehicle();
     }
 
     // Function run each frame
     this.run = function(){
-        for (var i = 0; i < noVehicles; i++){
+        for (var i = 0; i < this.noVehicles; i++){
             this.vehicles[i].update();
             this.vehicles[i].render();
         }
@@ -22,7 +22,7 @@ function Population(noVehicles){
         for (i = 0; i < this.noVehicles; i++){
             this.vehicles[i].getScore();
             if (this.vehicles[i].score > maxScore){
-                maxScore = this.rockets[i].score;
+                maxScore = this.vehicles[i].score;
             }
         }
         // Normalize
@@ -42,7 +42,7 @@ function Population(noVehicles){
     // Evolution function
     this.evolve = function(){
         var newVehicles = [];
-        for (var i = 0; i < this.rockets.length; i++){
+        for (var i = 0; i < this.vehicles.length; i++){
             // Mix parent A and B's DNA
             var parentA = random(this.parents).dna;
             var parentB = random(this.parents).dna;
