@@ -36,7 +36,7 @@ function DNA(genes) {
     this.mutation = function() {
       for (var i = 0; i < this.genes.length; i++) {
         // if random number less than 0.01, new gene is then random vector
-        if (random(1) < 0.1) {
+        if (random(1) < 0.05) {
           this.genes[i] = p5.Vector.random2D();
           this.genes[i].setMag(maxForce);
         }

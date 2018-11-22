@@ -62,7 +62,7 @@ function Vehicle(dna){
         this.score = map(d, 0, width, width, 0);
         // If rocket gets to target increase fitness of rocket
         if (this.completed) {
-            this.score *= 10;
+            this.score *= 20;
         }
         // If rocket does not get to target decrease fitness
         if (this.crashed) {
